@@ -1,4 +1,4 @@
-package com.strnadj.OptParser;
+package src.test.java.com.strnadj.OptParser;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -7,15 +7,14 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class AppTest 
-    extends TestCase
+public class OptParserTest extends TestCase
 {
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public AppTest( String testName )
+    public OptParserTest( String testName )
     {
         super( testName );
     }
@@ -23,9 +22,9 @@ public class AppTest
     /**
      * @return the suite of tests being tested
      */
-    public static Test suite()
+    public static TestSuite suite()
     {
-        return new TestSuite( AppTest.class );
+        return new TestSuite( OptParserTest.class );
     }
 
     /**
