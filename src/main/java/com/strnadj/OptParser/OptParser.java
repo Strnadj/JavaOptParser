@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import com.strnadj.OptParser.exceptions.*;
 
 /**
  * Generall option parser for definition and parsing command line arguments!
@@ -229,6 +230,15 @@ public class OptParser {
 		
 		return ret;
 	}
+
+	/** Public method for parsing from collection of strings
+	 * - String with parameters
+	 * @param parameters String of parameters
+	 * @throws Parsing exception
+	 */
+	public void parseArguments(String parameters) throws Exception {
+		parseArguments(parameters.split(" "));
+	}
 	
 	/** Public method for parsing from collection of strings
 	 * - collection must be LIST, cause parameters must be ordered!
@@ -271,14 +281,14 @@ public class OptParser {
 				help = true;
 				
 				if (DEBUG) {
-					System.out.println("OptParser debug: Help parameter found!");
+					System.out.println("DEBUG: Help parameter found!");
 				}
 			}
 		}
 		
 		// Debug
 		if (DEBUG) {
-			System.out.println("OptParser debug:\nParameters: "+Arrays.toString(parameters));
+			System.out.println("OptParser debug:\nDEBUG: Parameters "+Arrays.toString(parameters));
 		}
 		
 		// Path or expressions on the end!
@@ -299,12 +309,16 @@ public class OptParser {
 				
 				// Throw exception of undefined option!
 				if (o == null) {
-					throw new Exception(String.format("Command: %s unexcepted option %s", this.commandName, parameter ));
+					if (DEBUG) {
+						System.out.println(String.format("ERROR: Command: %s unexcepted option %s", this.commandName, parameter ));
+					}
+					
+					throw new UnexpectedOption(String.format("Command: %s unexcepted option %s", this.commandName, parameter ));
 				}
 				
 				// Debug
 				if (DEBUG) {
-					System.out.println("OptParser debug: found parameter "+o.getFullName());
+					System.out.println("DEBUG: found parameter "+o.getFullName());
 				}
 				
 				// Set filled! 
@@ -318,14 +332,24 @@ public class OptParser {
 						nextParameter = parameters[i+1];
 					} 
 					
+					
 					// Throw new exception when next string is null (not exist) or next string is option!!!
 					if (nextParameter == null || isOption(nextParameter)) {
-						throw new Exception(String.format("Command: %s - value: %c(%s) is required!", this.commandName, o.getShortName(), o.getFullName()));
+						if (DEBUG) {
+							System.out.println(String.format("DEBUG: Command: %s - value: %c(%s) is required!", this.commandName, o.getShortName(), o.getFullName()));
+						}
+						
+						// End with exception
+						throw new MissingOptionValue(String.format("Command: %s - value: %c(%s) is required!", this.commandName, o.getShortName(), o.getFullName()));
 					}
 					
 					// Set next parameter as value!
 					o.setValue(nextParameter);
 
+					if (DEBUG) {
+						System.out.println("DEBUG: Set value: "+nextParameter+" to command: "+o.getFullName());
+					}					
+					
 					// Skip next parameter! (it is value for this option)
 					i = i + 1;
 				}
@@ -339,7 +363,7 @@ public class OptParser {
 				poe.add(parameter);
 				
 				if (DEBUG) {
-					System.out.println("OptParser debug: Add: '"+parameter+"' to path or expression");
+					System.out.println("DEBUG: Add: '"+parameter+"' to path or expression");
 				}
 			}
 			
@@ -347,6 +371,10 @@ public class OptParser {
 			if (o != null) {
 				optionsValues.put(o.getFullName(), o);
 			}
+		}
+		
+		if (DEBUG) {
+			System.out.println("DEBUG: Merge POE size:"+poe.size());
 		}
 		
 		// *************************************** //
@@ -367,7 +395,7 @@ public class OptParser {
 			}
 			
 			if (DEBUG) {
-				System.out.println("Opt parser find param: "+i+" - "+pom);
+				System.out.println("Opt parser find POE: "+i+" - "+pom);
 			}
 			
 			// Get param
@@ -386,6 +414,11 @@ public class OptParser {
 			poeParsed.put(actPoeIndex, param);
 			actPoeIndex++;
 		}
+		
+		if (DEBUG) {
+			System.out.println("DEBUG: Merge POE END");
+		}
+				
 		
 		// Set for items!
 		int posRequired = 0;
@@ -426,7 +459,7 @@ public class OptParser {
 				posOptional++;
 			} else {
 				// Unknown attribute!
-				throw new Exception(String.format("Unknown attribute: \"%s\" for command: %s\n", param, this.commandName));
+				throw new UnknownAttribute(String.format("Unknown attribute: \"%s\" for command: %s\n", param, this.commandName));
 			}
 		}
 		
@@ -441,9 +474,9 @@ public class OptParser {
 			
 			// Throw exception
 			if (help) {
-				throw new Exception(this.getHelp());
+				throw new MissingOptionsHelp(this.getHelp());
 			} else {
-				throw new Exception(String.format("Missing options for command: %s - %s\n%s", this.commandName, options, this.getHelp()));
+				throw new MissingOptions(String.format("Missing options for command: %s - %s\n%s", this.commandName, options, this.getHelp()));
 			}
 		}
 	}
@@ -483,7 +516,9 @@ public class OptParser {
 		for (int i = 0; i < length; i++) {
 			char c = test.charAt(i);
 			if (c == ' ' && escapedCount % 2 == 0 && !singleQuotedOpen && !doubleQuotedOpen && token.length() > 0) {
-				parameters.add(token);
+				if (!token.isEmpty()) {
+					parameters.add(token);
+				}
 				escapedCount = 0;
 				token = "";
 			} else if(c == '\\') {
@@ -492,30 +527,38 @@ public class OptParser {
 			} else if(c == '\'' && escapedCount % 2 == 0) {
 				if (singleQuotedOpen == true) {
 					token += "'";
-					parameters.add(token);
+					if (!token.isEmpty()) {
+						parameters.add(token);
+					}
 					escapedCount = 0;
 					singleQuotedOpen = false;
 					token = "";
 				} else if(doubleQuotedOpen) {
-					throw new Exception("Quoted \" overleaping with '!!!\n");
+					throw new OverlapingBracketsException("Quoted \" overleaping with '!");
 				} else {
 					singleQuotedOpen = true;
-					parameters.add(token);
+					if (!token.isEmpty()) {
+						parameters.add(token);
+					}
 					escapedCount = 0;
 					token = "'";
 				}
 			} else if(c == '"' && escapedCount % 2 == 0) {
 				if (doubleQuotedOpen) {
 					token += "\"";
-					parameters.add(token);
+					if (!token.isEmpty()) {
+						parameters.add(token);
+					}
 					escapedCount = 0;
 					doubleQuotedOpen = false;
 					token = "";
 				} else if(singleQuotedOpen) {
-					throw new Exception("Quote ' overleaping with \"!!!\n");
+					throw new OverlapingBracketsException("Quote ' overleaping with \"!");
 				} else {
 					doubleQuotedOpen = true;
-					parameters.add(token);
+					if (!token.isEmpty()) {
+						parameters.add(token);
+					}
 					escapedCount = 0;
 					token = "\"";
 				}
@@ -528,9 +571,12 @@ public class OptParser {
 		if (token.length() > 0) {
 			parameters.add(token);
 		}
+		if (singleQuotedOpen) {
+			throw new OverlapingBracketsException("Single quoted bracket not closed!");
+		}
 		
-		if (doubleQuotedOpen || singleQuotedOpen) {
-			throw new Exception("Invalid quotes!\n");
+		if (doubleQuotedOpen) {
+			throw new OverlapingBracketsException("Double quoted bracket not closed!");
 		}
 		
 		String [] arr = new String[parameters.size()];
