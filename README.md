@@ -1,5 +1,9 @@
 # Java Option Parser
 
+[![Coverage Status](https://coveralls.io/repos/Strnadj/JavaOptParser/badge.png)](https://coveralls.io/r/Strnadj/JavaOptParser)
+[![Build Status](https://travis-ci.org/Strnadj/JavaOptParser.png?branch=master)](https://travis-ci.org/Strnadj/JavaOptParser)
+
+
 ## Info
 
 Java Simple Option parser is inspired from ruby OptParser class
@@ -58,6 +62,47 @@ System.out.println(options.getHelp());
 
 
 ```bash
+Usage: ls [options] "path"
+
+Optional options:
+	-f, --files         Just files
+	-d, --directories   Just directories	
+	-h, --help          Show this help
+```
+
+### Parse parameters
+
+```java
+try {
+    options.parseArguments(args);
+} catch(Exception e) {
+    System.err.println(e.getMessage());
+    System.exit(-1);
+}
+```
+
+### Getting parameters
+
+```java
+
+// Get if parameter was set
+if (options.getOption("help") != null) {
+    // Parameter help was set
+}
+
+// Values?
+if (options.getOption("directories") != null) {
+    options.getOption("directories").value();
+}
 
 ```
+
+## How to contribute?
+
+1. Fork it!
+2. Do your changes!
+3. Create pull-request and open issue!
+
+
+Thanks Strnadj :)
 
