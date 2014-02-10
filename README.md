@@ -1,6 +1,6 @@
 # Java Option Parser
 
-[![Coverage Status](https://coveralls.io/repos/Strnadj/JavaOptParser/badge.png)](https://coveralls.io/r/Strnadj/JavaOptParser)
+[![Coverage Status](https://coveralls.io/repos/Strnadj/JavaOptParser/badge.png?branch=master)](https://coveralls.io/r/Strnadj/JavaOptParser?branch=master)
 [![Build Status](https://travis-ci.org/Strnadj/JavaOptParser.png?branch=master)](https://travis-ci.org/Strnadj/JavaOptParser)
 
 
