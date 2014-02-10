@@ -1,5 +1,9 @@
 # Java Option Parser
 
+[![Coverage Status](https://coveralls.io/repos/Strnadj/JavaOptParser/badge.png)](https://coveralls.io/r/Strnadj/JavaOptParser)
+[![Build Status](https://travis-ci.org/Strnadj/JavaOptParser.png?branch=master)](https://travis-ci.org/Strnadj/JavaOptParser)
+
+
 ## Info
 
 Java Simple Option parser is inspired from ruby OptParser class
