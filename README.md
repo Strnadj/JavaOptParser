@@ -54,6 +54,14 @@ directories")
 listing");
 ```
 
+### Create option with required value?
+
+```java
+.addOptionRequiredValue('t', "target", OptParser.OPTIONAL, null, "Target
+folder")
+```
+
+
 ### Get help?
 
 ```java

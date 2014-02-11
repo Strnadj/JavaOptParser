@@ -98,19 +98,26 @@ public class OptParser {
 	 * @param defaultValue Default value
 	 * @param description Description
 	 * 
-	 * @return Option parser
+	 * @return OptionParser
 	 */
 	public OptParser addOption(char shortName, String fullName, int type, String defaultValue, String description) {
-		optionsContainer.add(
-			new Option(shortName, fullName, defaultValue, type, description)
-		);
-		
-		// Count variables of lenght for output
-		if (fullName.length() > maxFullNameLength) {
-			maxFullNameLength = fullName.length();
-		}
-		
-		return this;
+		return addOption(shortName, fullName, type, defaultValue, description, OptParser.OPTION_NO_VALUE);
+	}
+	
+	
+	/**
+	 * Create option with required value.
+	 * 
+	 * @param shortName Short name 'd'
+	 * @param fullName Full name 'directories'
+	 * @param type Type Required / Optional
+	 * @param defaultValue Default value (when value is not present)
+	 * @param description Command descritpion
+	 * 
+	 * @return OptionParser
+	 */
+	public OptParser addOptionRequiredValue(char shortName, String fullName, int type, String defaultValue, String description) {
+		return addOption(shortName, fullName, type, defaultValue, description, OptParser.OPTION_VALUE_IS_REQUIRED);
 	}
 	
 	/**
@@ -628,6 +635,28 @@ public class OptParser {
 		
 		// Nothing was found!
 		return null;
+	}
+	
+	/**
+	 * Return default value or filled value from parameters!
+	 * (we are not able decide if option was set or not from this method)
+	 * 
+	 * @param parameter Option name
+	 * 
+	 * @return Value
+	 */
+	public String getOptionValue(String parameter) {
+		// --
+		if (!parameter.startsWith("--")) 
+			parameter = "--" + parameter;
+		
+		// Get option
+		Option o = getOptionByParameter(parameter);
+		
+		if (o == null)
+			return null;
+		
+		return o.value();
 	}
 	
 	/**
