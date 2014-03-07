@@ -7,7 +7,7 @@
 ## Info
 
 Java Simple Option parser is inspired from ruby OptParser class
-([rdoc/OptionParser](http://ruby-doc.org/stdlib-2.0.0/libdoc/optparse/rdoc/OptionParser.html)].
+([rdoc/OptionParser](http://ruby-doc.org/stdlib-2.0.0/libdoc/optparse/rdoc/OptionParser.html)). This work has been created as part of Semester Work on University of West Bohemia ([zcu.cz](http://zcu.cz)).
 
 ## Installation
 
