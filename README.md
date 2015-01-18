@@ -105,6 +105,23 @@ if (options.getOption("directories") != null) {
 
 ```
 
+## Licence (DWTFYWTPL)
+
+DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE, Version 2, December 1991
+
+Copyright (C) 2014 Jan Strnadek <jan.strnadek@gmail.com>
+
+Everyone is permitted to copy and distribute verbatim or modified
+copies of this license document, and changing it is allowed as long
+as the name is changed.
+
+DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+0. You just DO WHAT THE FUCK YOU WANT TO.
+
+I renounce responsibility for any damage or whatever this library caused to who use it.
+
 ## How to contribute?
 
 1. Fork it!
